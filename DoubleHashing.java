@@ -7,6 +7,9 @@ public class DoubleHashing extends HashTable {
 
     public int h(Object key, int probe)
     {
-        return 0;
+        Object hashKey = key.hashCode();
+        //see if spot is open
+        //if not double probe
+        return 0; //return the correct location
     }
 }

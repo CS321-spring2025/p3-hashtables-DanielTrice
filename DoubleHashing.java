@@ -12,4 +12,17 @@ public class DoubleHashing extends HashTable {
         //if not double probe
         return 0; //return the correct location
     }
+
+    public int HashSearch(HashObject[] table, Object key)
+    {
+        int i = 0;
+        LinearProbing probe = new LinearProbing();
+        while (table[probe]);
+    }
+
+    public int HashInsert(HashObject[] table, Object key)
+    {
+        return 0;
+    }
+    
 }

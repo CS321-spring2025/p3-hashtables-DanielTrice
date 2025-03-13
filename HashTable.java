@@ -9,24 +9,16 @@ public abstract class HashTable
     {
         this.capacity = capacity;
         this.loadFactor = loadFactor;
-        this.table = Hashobject[capacity];
+        this.table = new HashObject[capacity];
     }
 
 
     public abstract int h(Object key, int probe);
     
-    private int LinearHashSearch(HashObject[] table, Object key)
-    {
-        int i = 0;
-        LinearProbing probe = new LinearProbing();
-        while (T[probe]);
-    }
-
-    private int linearHashInsert(HashObject[] table, Object key)
-    {
-        
-    }
-    
+    public abstract int HashSearch(HashObject[] table, Object key);
+   
+    public abstract int HashInsert(HashObject[] table, Object key);
+  
     protected int positiveMod (int dividend, int divisor) 
     {
         int quotient = dividend % divisor;

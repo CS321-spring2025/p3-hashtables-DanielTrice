@@ -7,8 +7,12 @@ public class LinearProbing extends HashTable {
 
     public int h(Object key, int probe)
     {
-        int newProbe = (key.hash() + i) % tableSize;
+        int newProbe = positiveMod(key.hashCode(), tablesize);
         return newProbe; //return the correct location
+
+        // h1(key) = positiveMod (key.hashCode(), tablesize);
+        // h2(key) = 1 + positiveMod (key.hashCode(), tablesize - 2);
+
     }
 
     public int HashSearch(HashObject[] table, Object key)

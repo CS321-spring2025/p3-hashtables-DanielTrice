@@ -7,7 +7,7 @@ public class DoubleHashing extends HashTable {
 
     public int h(Object key, int probe)
     {
-        int newProbe = (key.hash() + i) % tableSize;
+        int newProbe = 1 + positiveMod (key.hashCode(), tablesize - 2);
         return newProbe; //return the correct location
     }
 

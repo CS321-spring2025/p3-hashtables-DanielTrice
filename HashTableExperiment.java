@@ -14,5 +14,13 @@ public class HashTableExperiment
                      2 ==> print debugging output for each insert
 
          */
+
+
+        public void dumpToFile(String fileName) {
+     PrintWriter out = new PrintWriter(fileName);
+     // loop through the hash table, and print non-null entries 
+     // using toString() method in the HashObject class
+    out.close();
+}
     }
 }

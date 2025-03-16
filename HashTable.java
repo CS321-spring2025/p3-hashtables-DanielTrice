@@ -4,12 +4,15 @@ public abstract class HashTable
     protected int capacity;
     protected double loadFactor;
     protected HashObject[] table;
+    protected int tableSize;
     
     public HashTable(int capacity, double loadFactor)
     {
         this.capacity = capacity;
         this.loadFactor = loadFactor;
         this.table = new HashObject[capacity];
+        tableSize = TwinPrimeGenerator(capacity, )
+        
     }
 
 

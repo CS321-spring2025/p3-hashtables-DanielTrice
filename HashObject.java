@@ -10,22 +10,48 @@ public class HashObject
     private int frequency;
     private int probeCount;
 
-    public HashObject(Object key, int frequency, int probeCount)
+    public HashObject(Object key)
     {
         this.key = key;
         this.frequency = 1; 
         this.probeCount = 0; 
     }
 
-    public Object getKey(HashObject hashObject)
+    public Object getKey()
     {
-        return hashObject.key;
+        return this.key;
     }
 
-    //overide??
-    public boolean equals(HashObject obj1, HashObject obj2)
+    public int getFrequency() {
+        return frequency;
+    }
+    
+    public void incrementFrequency() 
     {
-        return true;
+        frequency++;
+    }
+
+    public int getProbeCount() {
+        return probeCount;
+    }
+
+    public void incrementProbeCount() 
+    {
+        probeCount++;
+    }
+    
+
+    //overide??
+    public boolean equals(HashObject compared)
+    {
+        if(this == compared.getKey())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     @Override
@@ -34,14 +60,4 @@ public class HashObject
         return "Key: " + key + ", Frequency: " + frequency + ", Probe Count: " + probeCount;
     }
 
-    /*
-     *  public void incrementFrequency() {
-        frequencyCount++;
-        }
-
-       
-        public void incrementProbeCount() {
-            probeCount++;
-        }
-     */
 }

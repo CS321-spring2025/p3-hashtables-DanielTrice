@@ -7,42 +7,8 @@ public class DoubleHashing extends HashTable {
 
     public int h(Object key, int probe)
     {
-        int newProbe = 1 + positiveMod (key.hashCode(), tablesize - 2);
-        return newProbe; //return the correct location
+        int h1 = positiveMod(key.hashCode(), tableSize);
+        int h2 = 1 + positiveMod(key.hashCode(), tableSize - 2);
+        return positiveMod(h1 + probe * h2, tableSize);
     }
-
-    public int HashSearch(HashObject[] table, Object key)
-    {
-        int i = 0;
-        while(table[probe] != null && i != tableSize)
-        {
-            int probe = h(key, i);
-            if(table[probe] == key)
-            {
-                return probe;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    public int HashInsert(HashObject[] table, Object key)
-    {
-        int i = 0;
-        while(i != tableSize)
-        {
-            int probe = h(key, i);
-            if(table[probe] == null)
-            {
-                table[probe] = key;
-                return probe;
-            }
-            else
-            {
-                i++;
-            }
-            System.out.println("hash table overtflow");
-        }
-    }
-    
 }

@@ -1,8 +1,8 @@
 public class DoubleHashing extends HashTable { 
 
-    public DoubleHashing(int capacity, double loadFactor)
+    public DoubleHashing(int capacity)
     {
-        super(capacity,loadFactor);
+        super(capacity);
     }
 
     public int h(Object key, int probe)

@@ -40,18 +40,16 @@ public class HashObject
         probeCount++;
     }
     
-
-    //overide??
+  
     public boolean equals(HashObject compared)
     {
-        if(this == compared.getKey())
+        if(this == compared)
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+        if (compared == null || getClass() != compared.getClass()) return false;
+        HashObject that = (HashObject) compared;
+        return key.equals(that.key);
     }
 
     @Override

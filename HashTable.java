@@ -2,15 +2,14 @@ public abstract class HashTable
 {
     protected int tableSize;
     protected int capacity;
-    protected double loadFactor;
+
     protected HashObject[] table;
     
-    public HashTable(int capacity, double loadFactor)
+    public HashTable(int capacity)
     {
         this.capacity = capacity;
-        this.loadFactor = loadFactor;
         this.table = new HashObject[capacity];
-        // this.tableSize = TwinPrimeGenerator(capacity, capacity); 
+        this.tableSize = 0;
     }
 
     public abstract int h(Object key, int probe);
@@ -36,6 +35,10 @@ public abstract class HashTable
 
     public int HashInsert(HashObject newObj)
     {
+        if (tableSize >= capacity) {
+            System.out.println("Hash table overflow - Table is full!");
+            return -1; // Table is full, cannot insert
+        }
         int i = 0;
         while(i < tableSize)
         {
@@ -43,13 +46,12 @@ public abstract class HashTable
             if(this.table[probe] == null)
             {
                 this.table[probe] = newObj;
-                this.tableSize ++;
+                this.tableSize++;
                 return probe;
             }
             else
             {
                 newObj.incrementProbeCount();
-                probe++;
                 i++;
             }
         }
@@ -73,6 +75,11 @@ public abstract class HashTable
         if (quotient < 0)
         quotient += divisor;
         return quotient;
+    }
+
+    public int getTableSize()
+    {
+        return this.tableSize;
     }
         
 }

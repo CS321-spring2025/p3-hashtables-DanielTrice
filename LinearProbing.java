@@ -1,13 +1,13 @@
 public class LinearProbing extends HashTable
 { 
-    public LinearProbing(int capacity, double loadFactor)
+    public LinearProbing(int capacity)
     {
-        super(capacity,loadFactor);
+        super(capacity);
     }
 
     public int h(Object key, int probe)
     {
-        int keyHash = key.hashCode() + probe % tableSize;
+        int keyHash = key.hashCode() + probe;
         int newProbe = positiveMod(keyHash, tableSize);
         return newProbe; //return the correct location
 

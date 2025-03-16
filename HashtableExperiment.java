@@ -39,11 +39,11 @@ public class HashtableExperiment {
         System.out.println("HashtableExperiment: Input: " + inputSourceName(dataSource) + "   Loadfactor: " + loadFactor + "\n");
 
         // Linear Probing
-        HashTable linearHash  = new LinearProbing(tableSize, loadFactor);
+        HashTable linearHash  = new LinearProbing(tableSize);
         runExperiment(linearHash, dataSource, numElements, debugLevel, "Linear Probing", "linear-dump.txt");
 
         // Double Hashing
-        HashTable doubleHash  = new DoubleHashing(tableSize, loadFactor);
+        HashTable doubleHash  = new DoubleHashing(tableSize);
         runExperiment(doubleHash, dataSource, numElements, debugLevel, "Double Hashing", "double-dump.txt");
     }
 
@@ -63,14 +63,15 @@ public class HashtableExperiment {
                 if (debug == 2) System.out.println("Inserted: " + obj);
             } else {
                 duplicates++;
+                obj.incrementFrequency();
                 if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
             }
             if (hashTable.tableSize >= numElements) break;
         }
 
         double avgProbes = (double) totalProbes / hashTable.getTableSize();
-        System.out.println("HashtableExperiment: size of hash table is " + hashTable.getNumInserted());
-        System.out.println("\tInserted " + (hashTable.getNumInserted() + duplicates) + " elements, of which " + duplicates + " were duplicates");
+        System.out.println("HashtableExperiment: size of hash table is " + hashTable.getTableSize());
+        System.out.println("\tInserted " + (hashTable.getTableSize() + duplicates) + " elements, of which " + duplicates + " were duplicates");
         System.out.printf("\tAvg. no. of probes = %.2f \n", avgProbes);
 
         if (debug == 1) {

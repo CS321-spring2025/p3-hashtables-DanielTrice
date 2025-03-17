@@ -51,7 +51,7 @@ public class HashObject
     @Override
     public String toString()
     {
-        return "Key: " + key + ", Frequency: " + frequency + ", Probe Count: " + probeCount;
+        return key + " " + frequency + " " + probeCount;
     }
 
 }

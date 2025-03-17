@@ -40,24 +40,21 @@ public abstract class HashTable
         }
 
         int i = 0;
-        while(i < capacity)
+        while(i < capacity) //probing until spot is found
         {
             int probe = h(newObj.getKey(), i);
-            if(table[probe] == null)
-            {
+            newObj.incrementProbeCount();  // Increment probe count for each probe
+            
+            if (table[probe] == null) {
                 table[probe] = newObj;
                 tableSize++;
                 return probe;
             }
-            else if(table[probe].equals(newObj))//same object
-            {
+            else if (table[probe].equals(newObj)) {  // Same object
                 table[probe].incrementFrequency();
-                System.out.println("dupe " + newObj.getKey());
                 return 0;
             }
-            else //spot taken, not by same key object
-            {
-                newObj.incrementProbeCount();
+            else {  // Spot taken, not by same key object
                 i++;
             }
         }

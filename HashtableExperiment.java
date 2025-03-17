@@ -34,7 +34,7 @@ public class HashtableExperiment {
 
         int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
         int numElements = (int) Math.ceil(loadFactor * tableSize);
-
+        System.out.println("num of elements: " + numElements);
         System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSize);
         System.out.println("HashtableExperiment: Input: " + inputSourceName(dataSource) + "   Loadfactor: " + loadFactor + "\n");
 
@@ -50,33 +50,55 @@ public class HashtableExperiment {
     private static void runExperiment(HashTable hashTable, int source, int numElements, int debug, String probingType, String dumpFileName) throws Exception {
         int duplicates = 0;
         long totalProbes = 0;
-
-        Object[] data = generateData(source, numElements); // extra data to ensure reaching load factor
-
+        int insertedCount = 0;
+    
+        
         System.out.println("\tUsing " + probingType);
-
-        for (Object key : data) {
-            HashObject obj = new HashObject(key);
-            int inserted = hashTable.HashInsert(obj);
-            if (inserted == 0) //dupe
-            {
-                duplicates++;
-                if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
-            } 
-            else //not dupe, inserted
-            {
-                totalProbes += obj.getProbeCount();
-                if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
+        
+        if(source == 1 || source == 2) //input from random values
+        {
+            Object[] data = generateData(source, numElements);  // extra data to ensure reaching load factor
+    
+            for (Object key : data) {
+                HashObject obj = new HashObject(key);
+                int inserted = hashTable.HashInsert(obj);
+                if (inserted == 0) {  // Duplicate found
+                    duplicates++;
+                    if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
+                } else {  // Successfully inserted
+                    totalProbes += obj.getProbeCount();
+                    insertedCount++;
+                    if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
+                }
+        
+                if (insertedCount >= numElements) break;  // Stop once we reach the desired number of insertions
             }
-            if (hashTable.tableSize >= numElements) break;
         }
         
+        //document input
+        Scanner scan = new Scanner(new File("word-list.txt"));
+        while(scan.hasNextLine())
+        {
+            HashObject obj = new HashObject(scan.nextLine());
+            int inserted = hashTable.HashInsert(obj);
+            if (inserted == 0) {  // Duplicate found
+                duplicates++;
+                if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
+            } else {  // Successfully inserted
+                totalProbes += obj.getProbeCount();
+                insertedCount++;
+                if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
+            }
+            if (insertedCount >= numElements) break;
+        }  
+            scan.close();
 
-        double avgProbes = (double) totalProbes / hashTable.getTableSize();
+
+        double avgProbes = (double) totalProbes / insertedCount;
         System.out.println("HashtableExperiment: size of hash table is " + hashTable.getTableSize());
-        System.out.println("\tInserted " + (hashTable.getTableSize() + duplicates) + " elements, of which " + duplicates + " were duplicates");
+        System.out.println("\tInserted " + (insertedCount + duplicates) + " elements, of which " + duplicates + " were duplicates");
         System.out.printf("\tAvg. no. of probes = %.2f \n", avgProbes);
-
+    
         if (debug == 1) {
             hashTable.dumpToFile(dumpFileName);
             System.out.println("HashtableExperiment: Saved dump of hash table\n");
@@ -100,12 +122,7 @@ public class HashtableExperiment {
                     current += 1000;
                 }
                 break;
-            case 3: // Word list
-                Scanner scan = new Scanner(new File("word-list.txt"));
-                for (int i = 0; i < count && scan.hasNextLine(); i++)
-                    data[i] = scan.nextLine().trim();
-                scan.close();
-                break;
+            
             default:
                 throw new IllegalArgumentException("Invalid data source type.");
         }

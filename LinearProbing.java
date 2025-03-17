@@ -14,4 +14,5 @@ public class LinearProbing extends HashTable
         // h1(key) = positiveMod (key.hashCode(), tablesize);
         // h2(key) = 
     }
+    
 }

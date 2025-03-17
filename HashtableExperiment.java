@@ -68,6 +68,7 @@ public class HashtableExperiment {
             }
             if (hashTable.tableSize >= numElements) break;
         }
+        
 
         double avgProbes = (double) totalProbes / hashTable.getTableSize();
         System.out.println("HashtableExperiment: size of hash table is " + hashTable.getTableSize());

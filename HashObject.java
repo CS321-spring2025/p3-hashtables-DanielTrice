@@ -9,6 +9,7 @@ public class HashObject
     private Object key;
     private int frequency;
     private int probeCount;
+    
 
     public HashObject(Object key)
     {

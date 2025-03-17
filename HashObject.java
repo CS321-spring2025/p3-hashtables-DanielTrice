@@ -42,15 +42,10 @@ public class HashObject
     }
     
   
-    public boolean equals(HashObject compared)
+
+    public boolean equals(HashObject compared) 
     {
-        if(this == compared)
-        {
-            return true;
-        }
-        if (compared == null || getClass() != compared.getClass()) return false;
-        HashObject that = (HashObject) compared;
-        return key.equals(that.key);
+        return this.key.equals(compared.getKey());
     }
 
     @Override

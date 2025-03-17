@@ -32,7 +32,7 @@ public class HashtableExperiment {
         double loadFactor = Double.parseDouble(args[1]);
         int debugLevel = args.length == 3 ? Integer.parseInt(args[2]) : 0; 
 
-        int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 100000);
+        int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
         int numElements = (int) Math.ceil(loadFactor * tableSize);
 
         System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSize);
@@ -51,20 +51,22 @@ public class HashtableExperiment {
         int duplicates = 0;
         long totalProbes = 0;
 
-        Object[] data = generateData(source, numElements * 2); // extra data to ensure reaching load factor
+        Object[] data = generateData(source, numElements); // extra data to ensure reaching load factor
 
         System.out.println("\tUsing " + probingType);
 
         for (Object key : data) {
             HashObject obj = new HashObject(key);
             int inserted = hashTable.HashInsert(obj);
-            if (inserted == 0) {
-                totalProbes += obj.getProbeCount();
-                if (debug == 2) System.out.println("Inserted: " + obj);
-            } else {
+            if (inserted == 0) //dupe
+            {
                 duplicates++;
-                obj.incrementFrequency();
                 if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
+            } 
+            else //not dupe, inserted
+            {
+                totalProbes += obj.getProbeCount();
+                if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
             }
             if (hashTable.tableSize >= numElements) break;
         }

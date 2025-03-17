@@ -33,7 +33,7 @@ public class HashtableExperiment {
         int debugLevel = args.length == 3 ? Integer.parseInt(args[2]) : 0; 
 
         int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
-        int numElements = (int) Math.ceil(loadFactor * tableSize);
+        int numElements = (int) Math.ceil(loadFactor * tableSize) - 1;
         System.out.println("num of elements: " + numElements);
         System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSize);
         System.out.println("HashtableExperiment: Input: " + inputSourceName(dataSource) + "   Loadfactor: " + loadFactor + "\n");
@@ -57,7 +57,7 @@ public class HashtableExperiment {
         
         if(source == 1 || source == 2) //input from random values
         {
-            Object[] data = generateData(source, numElements);  // extra data to ensure reaching load factor
+            Object[] data = generateData(source, numElements);
     
             for (Object key : data) {
                 HashObject obj = new HashObject(key);
@@ -74,25 +74,25 @@ public class HashtableExperiment {
                 if (insertedCount >= numElements) break;  // Stop once we reach the desired number of insertions
             }
         }
-        
-        //document input
-        Scanner scan = new Scanner(new File("word-list.txt"));
-        while(scan.hasNextLine())
-        {
-            HashObject obj = new HashObject(scan.nextLine());
-            int inserted = hashTable.HashInsert(obj);
-            if (inserted == 0) {  // Duplicate found
-                duplicates++;
-                if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
-            } else {  // Successfully inserted
-                totalProbes += obj.getProbeCount();
-                insertedCount++;
-                if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
-            }
-            if (insertedCount >= numElements) break;
-        }  
-            scan.close();
-
+        else //document input
+        {  
+            Scanner scan = new Scanner(new File("word-list.txt"));
+            while(scan.hasNextLine())
+            {
+                HashObject obj = new HashObject(scan.nextLine());
+                int inserted = hashTable.HashInsert(obj);
+                if (inserted == 0) {  // Duplicate found
+                    duplicates++;
+                    if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
+                } else {  // Successfully inserted
+                    totalProbes += obj.getProbeCount();
+                    insertedCount++;
+                    if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
+                }
+                if (insertedCount >= numElements) break;
+            }  
+                scan.close();
+        }
 
         double avgProbes = (double) totalProbes / insertedCount;
         System.out.println("HashtableExperiment: size of hash table is " + hashTable.getTableSize());

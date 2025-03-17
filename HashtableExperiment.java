@@ -32,7 +32,7 @@ public class HashtableExperiment {
         double loadFactor = Double.parseDouble(args[1]);
         int debugLevel = args.length == 3 ? Integer.parseInt(args[2]) : 0; 
 
-        int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
+        int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 100000);
         int numElements = (int) Math.ceil(loadFactor * tableSize);
 
         System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSize);

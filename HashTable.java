@@ -17,7 +17,7 @@ public abstract class HashTable
     public int HashSearch(Object key)
     {
         
-        for(int i = 0;i < tableSize; i++)
+        for(int i = 0;i < capacity; i++)
         {
             int probe = h(key, i);
             if(this.table[probe] == null)
@@ -40,7 +40,7 @@ public abstract class HashTable
             return -1; // Table is full, cannot insert
         }
         int i = 0;
-        while(i < tableSize)
+        while(i < capacity)
         {
             int probe = h(newObj.getKey(), i);
             if(this.table[probe] == null)

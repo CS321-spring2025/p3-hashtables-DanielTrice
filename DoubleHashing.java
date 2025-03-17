@@ -7,8 +7,8 @@ public class DoubleHashing extends HashTable {
 
     public int h(Object key, int probe)
     {
-        int h1 = positiveMod(key.hashCode(), tableSize);
-        int h2 = 1 + positiveMod(key.hashCode(), tableSize - 2);
-        return positiveMod(h1 + probe * h2, tableSize);
+        int h1 = positiveMod(key.hashCode(), this.capacity);
+        int h2 = 1 + positiveMod(key.hashCode(), this.capacity - 2);
+        return positiveMod(h1 + probe * h2, this.capacity);
     }
 }

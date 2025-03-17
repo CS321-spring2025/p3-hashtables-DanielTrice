@@ -8,7 +8,7 @@ public class LinearProbing extends HashTable
     public int h(Object key, int probe)
     {
         int keyHash = key.hashCode() + probe;
-        int newProbe = positiveMod(keyHash, tableSize);
+        int newProbe = positiveMod(keyHash, this.capacity);
         return newProbe; //return the correct location
 
         // h1(key) = positiveMod (key.hashCode(), tablesize);

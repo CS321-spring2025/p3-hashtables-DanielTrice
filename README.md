@@ -27,7 +27,7 @@ Usage: java HashtableExperiment <dataSource> <loadFactor> [<debugLevel>]
                     2 ==> print detailed debugging for each insert
 
 ## Results 
-
+Word Data
 |Load Factor    |Linear avg probe | Linear avg probe |
 | ------------- |:---------------:| -----:           |
 | 0.50          |1.60             |1.39|
@@ -37,6 +37,29 @@ Usage: java HashtableExperiment <dataSource> <loadFactor> [<debugLevel>]
 | 0.90          |19.81            |2.57|
 | 0.95          |110.59           |3.19|
 | 0.99          |471.67           |4.70|
+
+Integer Data
+|Load Factor    |Linear avg probe | Linear avg probe |
+| ------------- |:---------------:| -----:           |
+| 0.50          |1.49             |1.38|
+| 0.60          |1.74             |1.52 |
+| 0.70          |2.15          |1.72|
+| 0.80          |2.98             |2.02|
+| 0.90          |5.63           |2.57|
+| 0.95          |10.77         |3.16|
+| 0.99          |61.26          |4.63|
+
+Date Data
+|Load Factor    |Linear avg probe | Linear avg probe |
+| ------------- |:---------------:| -----:           |
+| 0.50          |1.28            |1.38|
+| 0.60          |1.44             |1.69 |
+| 0.70          |1.60          |1.99 |
+| 0.80          |1.82              |2.40 |
+| 0.90          |2.18            |3.14 |
+| 0.95          |2.70        |3.83 |
+| 0.99          |5.41          |5.34|
+
 
 ## Sources used
 

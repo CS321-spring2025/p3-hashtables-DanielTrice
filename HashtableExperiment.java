@@ -1,104 +1,133 @@
-
-    // public static void Main(String[] args)
-    // {
-    //     /*
-    //      *  Usage: java HashtableExperiment <dataSource> <loadFactor> [<debugLevel>]
-    //         <dataSource>: 1 ==> random numbers
-    //                  2 ==> date value as a long
-    //                  3 ==> word list
-    //         <loadFactor>: The ratio of objects to table size, 
-    //                    denoted by alpha = n/m
-    //         <debugLevel>: 0 ==> print summary of experiment
-    //                  1 ==> save the two hash tables to a file at the end
-    //                  2 ==> print debugging output for each insert
-
-    //      */
-
-
- 
 import java.io.*;
 import java.util.*;
 
+/**
+* Author: Daniel Trice
+ * Date: 3/17/2025
+ * This class performs an experiment using our hashtable with different both linear and double hashing.
+ * It supports data insertion of random numbers, Long Date values, or words from a file.
+ * Uses a twin prime number for determining the size of the hash table.
+ * 
+ * Command-line arguments for the user to specify the data type, load factor, and the debug level.
+ */
 public class HashtableExperiment {
 
+
+    /**
+     * Main method of the program. Validates input arguments, generates 
+     * hash tables, and runs hash table experiments using linear probing 
+     * and double hashing techniques.
+     *
+     * @param args command-line arguments: <dataType>, <loadFactor>, <debugLevel>
+     * 
+     * @throws Exception Throws exception if file is not found
+     */
     public static void main(String[] args) throws Exception 
+    {
+        if (args.length < 2 || args.length > 3) 
         {
-        if (args.length < 2 || args.length > 3) {
-            usage();
+            printUsage();
             return;
         }
 
-        int dataSource = Integer.parseInt(args[0]);
+        int dataType = Integer.parseInt(args[0]);
         double loadFactor = Double.parseDouble(args[1]);
-        int debugLevel = args.length == 3 ? Integer.parseInt(args[2]) : 0; 
+        int debugLevel = args.length == 3 ? Integer.parseInt(args[2]) : 0;
+        int tableSizePrime = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
+        int amtElements = (int) Math.ceil(loadFactor * tableSizePrime);
 
-        int tableSize = TwinPrimeGenerator.generateTwinPrime(95500, 96000);
-        int numElements = (int) Math.ceil(loadFactor * tableSize) - 1;
-        System.out.println("num of elements: " + numElements);
-        System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSize);
-        System.out.println("HashtableExperiment: Input: " + inputSourceName(dataSource) + "   Loadfactor: " + loadFactor + "\n");
+        // prints table information
+        System.out.println("HashtableExperiment: Found a twin prime table capacity: " + tableSizePrime);
+        System.out.println("HashtableExperiment: Input: " + dataTypeString(dataType) + "   Loadfactor: " + loadFactor + "\n");
 
-        // Linear Probing
-        HashTable linearHash  = new LinearProbing(tableSize);
-        runExperiment(linearHash, dataSource, numElements, debugLevel, "Linear Probing", "linear-dump.txt");
+
+        //Linear Probing
+        hashSimulation(new LinearProbing(tableSizePrime),amtElements, dataType, debugLevel, "Linear Probing", "linear-dump.txt");
 
         // Double Hashing
-        HashTable doubleHash  = new DoubleHashing(tableSize);
-        runExperiment(doubleHash, dataSource, numElements, debugLevel, "Double Hashing", "double-dump.txt");
+        hashSimulation(new DoubleHashing(tableSizePrime),amtElements , dataType, debugLevel, "Double Hashing", "double-dump.txt");
     }
 
-    private static void runExperiment(HashTable hashTable, int source, int numElements, int debug, String probingType, String dumpFileName) throws Exception {
+
+    /**
+     * Runs the hash table simulation using the specified probing method,
+     * inserting elements and recording statistics like total probes and duplicates.
+     * if debug level is 1, a dump of both hash tables are saved to a file.
+     *
+     * @param hashTable the hash table object to use for insertion
+     * @param amtElements the number of elements to insert
+     * @param dataType the type of data to insert 1 = random, 2 = date, 3 = word list
+     * @param debug the debug level 0 = summary, 1 = file dump, 2 = detailed debug
+     * @param probingType a string to describe the probing technique used 
+     * @param dumpFileName the file name to dump the hash table if required
+     */
+    private static void hashSimulation(HashTable hashTable, int amtElements, int dataType,int debug, String probeType, String dumpFileName)
+    {
+
         int duplicates = 0;
         long totalProbes = 0;
         int insertedCount = 0;
-    
-        
-        System.out.println("\tUsing " + probingType);
-        
-        if(source == 1 || source == 2) //input from random values
+
+        System.out.println("\tUsing " + probeType);
+
+        if (dataType == 1 || dataType == 2) //table holds int or Date
         {
-            Object[] data = generateData(source, numElements);
-    
-            for (Object key : data) {
-                HashObject obj = new HashObject(key);
-                int inserted = hashTable.HashInsert(obj);
-                if (inserted == 0) {  // Duplicate found
-                    duplicates++;
-                    if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
-                } else {  // Successfully inserted
+            Object[] dataList = dataGenerator(dataType, amtElements * 2); //generate either 
+
+            for (Object item : dataList) 
+            {
+                HashObject obj = new HashObject(item);
+                boolean inserted = hashTable.HashInsert(obj);
+                if (inserted) {
                     totalProbes += obj.getProbeCount();
                     insertedCount++;
-                    if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
+                    if (debug == 2) System.out.println("Inserted: " + obj);
+                } else {
+                    duplicates++;
+                    if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
                 }
-        
-                if (insertedCount >= numElements) break;  // Stop once we reach the desired number of insertions
+                if (insertedCount >= amtElements) break;
+            }
+        } 
+        else //table holds strings
+        { 
+            Scanner scan;
+            try {
+                scan = new Scanner(new File("word-list.txt"));
+                while (scan.hasNextLine()) 
+                {
+                    HashObject obj = new HashObject(scan.nextLine());
+                    boolean inserted = hashTable.HashInsert(obj);
+                    if (inserted) 
+                    {
+                        totalProbes += obj.getProbeCount();
+                        insertedCount++;
+                        if (debug == 2) System.out.println("Inserted: " + obj);
+                    } else 
+                    {
+                        duplicates++;
+                        if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
+                    }
+                    if (insertedCount >= amtElements)
+                    {
+                        break;
+                    }
+                }  
+                scan.close(); 
+            } 
+            catch (FileNotFoundException e) 
+            {
+                e.printStackTrace();
             }
         }
-        else //document input
-        {  
-            Scanner scan = new Scanner(new File("word-list.txt"));
-            while(scan.hasNextLine())
-            {
-                HashObject obj = new HashObject(scan.nextLine());
-                int inserted = hashTable.HashInsert(obj);
-                if (inserted == 0) {  // Duplicate found
-                    duplicates++;
-                    if (debug == 2) System.out.println("Duplicate found: " + obj.getKey());
-                } else {  // Successfully inserted
-                    totalProbes += obj.getProbeCount();
-                    insertedCount++;
-                    if (debug == 2) System.out.println("Inserted: " + obj + "@" + inserted);
-                }
-                if (insertedCount >= numElements) break;
-            }  
-                scan.close();
-        }
 
-        double avgProbes = (double) totalProbes / insertedCount;
-        System.out.println("HashtableExperiment: size of hash table is " + hashTable.getTableSize());
+        double avgProbes = (double) totalProbes / insertedCount; //get avg probes
+
+        //print hashtable data after insertions
+        System.out.println("HashtableExperiment: size of hash table is " + insertedCount);
         System.out.println("\tInserted " + (insertedCount + duplicates) + " elements, of which " + duplicates + " were duplicates");
         System.out.printf("\tAvg. no. of probes = %.2f \n", avgProbes);
-    
+
         if (debug == 1) {
             hashTable.dumpToFile(dumpFileName);
             System.out.println("HashtableExperiment: Saved dump of hash table\n");
@@ -107,40 +136,44 @@ public class HashtableExperiment {
         }
     }
 
-    private static Object[] generateData(int sourceType, int count) throws Exception {
-        Object[] data = new Object[count];
-        switch (sourceType) {
-            case 1: // Random integers
-                Random rand = new Random();
-                for (int i = 0; i < count; i++)
-                    data[i] = rand.nextInt();
+    /**
+     * Generates a list of data objects based on the specified data type, int or Date
+     *
+     * @param sourceType the type of data to generate
+     * @param amtElements the number of elements to generate
+     * @return array of generated data objects
+     */
+    private static Object[] dataGenerator(int sourceType, int amtElements)
+    {
+        Object[] data = new Object[amtElements];
+        switch (sourceType) 
+        {
+            case 1: 
+                Random rand = new Random(); //random integers
+                for (int i = 0; i < amtElements; i++)
+                    data[i] = rand.nextInt(); //insert new random int
                 break;
-            case 2: // Date as long
-                long current = new Date().getTime();
-                for (int i = 0; i < count; i++) {
-                    data[i] = new Date(current);
-                    current += 1000;
+            case 2: 
+                long current = new Date().getTime(); //Date value
+                for (int i = 0; i < amtElements; i++) 
+                {
+                    data[i] = new Date(current); //insert new Date object
+                    current += 1000; //increment time
                 }
                 break;
-            
             default:
-                throw new IllegalArgumentException("Invalid data source type.");
+                throw new IllegalArgumentException("Invalid data source type."); //input type doesnt match
         }
         return data;
     }
 
-    private static String inputSourceName(int source) {
-        switch (source) {
-            case 1: return "Random Numbers";
-            case 2: return "Date Values";
-            case 3: return "Word-List";
-            default: return "Unknown";
-        }
-    }
-
-    private static void usage() {
-        System.out.println("Usage: java HashtableExperiment <dataSource> <loadFactor> [<debugLevel>]");
-        System.out.println("\t<dataSource>: 1 ==> random numbers");
+    /**
+     * Prints usage instructions for the program.
+     */
+    private static void printUsage() 
+    {
+        System.out.println("Usage: java HashtableExperiment <dataType> <loadFactor> [<debugLevel>]");
+        System.out.println("\t<dataType>: 1 ==> random numbers");
         System.out.println("\t              2 ==> date value as a long");
         System.out.println("\t              3 ==> word list");
         System.out.println("\t<loadFactor>: Ratio of objects to table size (alpha = n/m)");
@@ -148,4 +181,22 @@ public class HashtableExperiment {
         System.out.println("\t              1 ==> dump hash tables to files at end");
         System.out.println("\t              2 ==> print detailed debugging for each insert");
     }
+
+    /**
+     * Converts the data type integer value to a string representation.
+     *
+     * @param sourceType the data type integer
+     * @return a string representation of the data type
+     */
+    private static String dataTypeString(int sourceType) //returns string representation of data type input
+    {
+        switch (sourceType) 
+        {
+            case 1: return "Random Numbers";
+            case 2: return "Date Values";
+            case 3: return "Word-List";
+            default: return "Unknown";
+        }
+    }
+
 }
